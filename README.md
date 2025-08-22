@@ -123,6 +123,29 @@ Build & Run
 4. Run on device/emulator.
 
 
+---
+
+Creating a Release
+
+This project includes a `release.sh` script to automate the process of building the APK and creating a GitHub release.
+
+**Prerequisites:**
+
+*   **GitHub CLI (`gh`):** You must have the GitHub CLI installed. You can find installation instructions at [cli.github.com](https://cli.github.com).
+*   **GitHub Token:** You must have a GitHub Personal Access Token with `repo` scope. This token should be exported as an environment variable named `GITHUB_TOKEN`.
+    ```bash
+    export GITHUB_TOKEN=your_github_token_here
+    ```
+
+**Usage:**
+
+To create a new release, run the script with a version tag:
+
+```bash
+./release.sh v1.0.0
+```
+
+The script will then build the debug APK, create a new release on GitHub with the specified tag, and upload the APK as a release asset.
 
 
 ---

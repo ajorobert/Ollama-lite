@@ -1,6 +1,7 @@
 package com.example.ollamalite.di
 
 import com.example.ollamalite.data.api.OllamaApi
+import com.example.ollamalite.data.local.UserPreferencesRepository
 import com.example.ollamalite.data.repository.OllamaRepository
 import com.example.ollamalite.data.repository.OllamaRepositoryImpl
 import com.squareup.moshi.Moshi
@@ -9,6 +10,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +22,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private const val BASE_URL = "http://10.0.2.2:11434"
+    private const val DEFAULT_BASE_URL = "http://10.0.2.2:11434"
 
     @Provides
     @Singleton
@@ -39,9 +42,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        moshi: Moshi,
+        userPreferencesRepository: UserPreferencesRepository
+    ): Retrofit {
+        val baseUrl = runBlocking {
+            userPreferencesRepository.serverUrl.first() ?: DEFAULT_BASE_URL
+        }
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

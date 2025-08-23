@@ -1,7 +1,6 @@
 package com.example.ollamalite.domain.use_case
 
-import com.example.ollamalite.data.model.GenerateRequest
-import com.example.ollamalite.data.model.GenerateResponse
+import com.example.ollamalite.data.model.TagsResponse
 import com.example.ollamalite.data.repository.OllamaRepository
 import com.example.ollamalite.domain.Result
 import kotlinx.coroutines.flow.Flow
@@ -10,14 +9,13 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GenerateUseCase @Inject constructor(
+class GetModelsUseCase @Inject constructor(
     private val repository: OllamaRepository
 ) {
-    operator fun invoke(prompt: String, model: String): Flow<Result<GenerateResponse>> = flow {
+    operator fun invoke(): Flow<Result<TagsResponse>> = flow {
         try {
             emit(Result.Loading())
-            val request = GenerateRequest(model = model, prompt = prompt)
-            val response = repository.generate(request)
+            val response = repository.getModels()
             if (response.isSuccessful) {
                 response.body()?.let {
                     emit(Result.Success(it))

@@ -81,6 +81,9 @@ dependencies {
 
     // Kotlinx Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
 }
 
 kapt {

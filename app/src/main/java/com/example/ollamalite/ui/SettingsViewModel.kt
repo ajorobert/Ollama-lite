@@ -15,6 +15,7 @@ import com.example.ollamalite.domain.Result
 import com.example.ollamalite.domain.use_case.GetModelsUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.first
 
 data class SettingsUiState(
     val models: List<String> = emptyList(),
@@ -45,17 +46,27 @@ class SettingsViewModel @Inject constructor(
     )
 
     init {
-        getModels()
+        viewModelScope.launch {
+            serverUrl.collect {
+                if (it != null) {
+                    fetchModelsAndSetDefault()
+                }
+            }
+        }
     }
 
-    private fun getModels() {
+    private fun fetchModelsAndSetDefault() {
         getModelsUseCase().onEach { result ->
             when (result) {
                 is Result.Success -> {
+                    val models = result.data?.models?.map { it.name } ?: emptyList()
                     _uiState.value = _uiState.value.copy(
-                        models = result.data?.models?.map { it.name } ?: emptyList(),
+                        models = models,
                         isLoading = false
                     )
+                    if (models.isNotEmpty() && selectedModel.value == null) {
+                        saveSelectedModel(models.first())
+                    }
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(
@@ -73,6 +84,7 @@ class SettingsViewModel @Inject constructor(
     fun saveServerUrl(url: String) {
         viewModelScope.launch {
             userPreferencesRepository.saveServerUrl(url)
+            fetchModelsAndSetDefault()
         }
     }
 

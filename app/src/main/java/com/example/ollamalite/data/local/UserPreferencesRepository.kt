@@ -24,7 +24,7 @@ class UserPreferencesRepository @Inject constructor(@ApplicationContext private 
 
     val serverUrl: Flow<String?> = context.dataStore.data
         .map { preferences ->
-            preferences[PreferencesKeys.SERVER_URL]
+            preferences[PreferencesKeys.SERVER_URL] ?: "http://127.0.0.1:11434"
         }
 
     val selectedModel: Flow<String?> = context.dataStore.data

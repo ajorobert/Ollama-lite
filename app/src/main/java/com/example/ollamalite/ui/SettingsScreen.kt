@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 
@@ -106,9 +107,14 @@ fun SettingsScreen(
                     viewModel.saveServerUrl(url)
                     onSave()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !uiState.isLoading
             ) {
-                Text("Save")
+                if (uiState.isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    Text("Save")
+                }
             }
         }
     }

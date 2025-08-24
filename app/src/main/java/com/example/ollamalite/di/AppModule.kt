@@ -41,7 +41,6 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         moshi: Moshi,
@@ -58,7 +57,6 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideOllamaApi(retrofit: Retrofit): OllamaApi {
         return retrofit.create(OllamaApi::class.java)
     }

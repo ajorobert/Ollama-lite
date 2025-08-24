@@ -53,10 +53,11 @@ fun ChatScreen(
                 .padding(16.dp)
         ) {
             LazyColumn(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                item {
-                    Text(text = uiState.response)
+                items(uiState.messages) { message ->
+                    ChatMessage(message)
                 }
             }
             Row(
@@ -87,6 +88,26 @@ fun ChatScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ChatMessage(message: ChatMessage) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = if (message.isUser) Arrangement.End else Arrangement.Start
+    ) {
+        Card(
+            modifier = Modifier.padding(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = if (message.isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Text(
+                text = message.message,
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
 }
